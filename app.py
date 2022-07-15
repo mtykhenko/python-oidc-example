@@ -39,4 +39,4 @@ def protected():
 def public():
     return Response("This page is publicly open! No auth required")
 
-app.run(host='0.0.0.0', port=80)
+app.run(host='0.0.0.0', port=5000)
