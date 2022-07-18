@@ -15,15 +15,12 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-#OIDC configuration
-app.config.update({'OIDC_REDIRECT_URI': os.getenv('OIDC_REDIRECT_URI'),
-                   'SECRET_KEY': 'dev_key',  # make sure to change this!!
-                   'PERMANENT_SESSION_LIFETIME': datetime.timedelta(days=7).total_seconds(),
-                   'DEBUG': True})
+#Load Flask app and OIDC configuration from prefixed env variables (FLASK_xxxxxxx) provided by deployment
+app.config.from_prefixed_env()
 
 CLIENT_METADATA = ClientMetadata(client_id=os.getenv('CLIENT_ID'), client_secret=os.getenv('CLIENT_SECRET'))
-PROVIDER_CONFIG = ProviderConfiguration(issuer=os.getenv('ISSUER'), client_metadata=CLIENT_METADATA)
-PROVIDER_NAME = os.getenv('PROVIDER_NAME')
+PROVIDER_CONFIG = ProviderConfiguration(issuer=app.config['ISSUER'], client_metadata=CLIENT_METADATA)
+PROVIDER_NAME = app.config['PROVIDER_NAME']
 
 auth = OIDCAuthentication({PROVIDER_NAME: PROVIDER_CONFIG}, app=app)
 
