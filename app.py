@@ -2,7 +2,7 @@ import datetime
 import os
 
 from flask import Flask, Response, jsonify, session
-#from flask_session import Session
+from flask_session import Session
 
 from flask_pyoidc import OIDCAuthentication
 from flask_pyoidc.provider_configuration import ProviderConfiguration, ClientMetadata
@@ -11,9 +11,9 @@ from flask_pyoidc.user_session import UserSession
 app = Flask(__name__)
 
 #filesystem based session persistence
-#app.config["SESSION_PERMANENT"] = False
-#app.config["SESSION_TYPE"] = "filesystem"
-#Session(app)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 #OIDC configuration
 app.config.update({'OIDC_REDIRECT_URI': os.getenv('OIDC_REDIRECT_URI'),
