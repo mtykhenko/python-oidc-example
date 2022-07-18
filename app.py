@@ -8,12 +8,17 @@ from flask_pyoidc import OIDCAuthentication
 from flask_pyoidc.provider_configuration import ProviderConfiguration, ClientMetadata
 from flask_pyoidc.user_session import UserSession
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 app = Flask(__name__)
 
 #filesystem based session persistence
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+#middleware to resolve flask behaviour behind reverse proxy
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 
 #Load Flask app and OIDC configuration from prefixed env variables (FLASK_xxxxxxx) provided by deployment
 app.config.from_prefixed_env()
